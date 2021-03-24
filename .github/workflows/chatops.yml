@@ -52,7 +52,7 @@ jobs:
         env:
           MESSAGE: |
             Test succeeded on ${{ steps.it.outputs.SHA }}
-            workflow-url: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+            workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
