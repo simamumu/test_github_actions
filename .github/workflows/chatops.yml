@@ -25,21 +25,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: [listen_comments]
     if: needs.listen_comments.outputs.run == 'true'
+
     steps:
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
-        with:
-          python-version: "3.7"
-
-      - name: Get full Python version
-        id: get-full-python-version
-        run: echo ::set-output name=version::$(python -c "import sys; print('-'.join(str(v) for v in sys.version_info))")
-
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v2.0.0
-        with:
-          poetry-version: 1.1.4
-
+      - name: script
+        run: |
+          hoge=`cat hoge.py`
+          echo $hoge
+          exit $hoge
+        shell: bash
+  
       # NOTE: webhook イベントの制約により checkout の挙動が `poc-ci.yaml` とは若干異なる
       # - `poc-ci.yaml` の checkout: PR ブランチの head をベースブランチにマージしたコミット
       # - `poc-chatops.yaml` の checkout: PR ブランチの head コミット
@@ -47,7 +41,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.ilisten_commentst.outputs.sha }}
+          ref: ${{ needs.listen_comments.outputs.sha }}
 
       - name: Post Comment
         uses: actions/github-script@v3
