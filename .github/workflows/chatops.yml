@@ -52,16 +52,7 @@ jobs:
         env:
           MESSAGE: |
             Test succeeded on ${{ steps.it.outputs.SHA }}
-            url: ${{ $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID }}
-            GITHUB_WORKFLOW: ${{ $GITHUB_WORKFLOW }}
-            GITHUB_RUN_ID: ${{ $GITHUB_RUN_ID }}
-            GITHUB_RUN_NUMBER: ${{ $GITHUB_RUN_NUMBER }}
-            GITHUB_ACTION: ${{ $GITHUB_ACTION }}
-            GITHUB_ACTOR: ${{ $GITHUB_ACTOR }}
-            GITHUB_EVENT_NAME: ${{ $GITHUB_EVENT_NAME }}
-            GITHUB_EVENT_PATH: ${{ $GITHUB_EVENT_PATH }}
-            GITHUB_REF: ${{ $GITHUB_REF }}
-            GITHUB_HEAD_REF: ${{ $GITHUB_HEAD_REF }}
+            workflow-url: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -87,6 +78,7 @@ jobs:
         env:
           MESSAGE: |
             Test failed on ${{ needs.chatops.outputs.sha }}
+            workflow-url: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
