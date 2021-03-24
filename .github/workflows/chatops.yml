@@ -33,6 +33,7 @@ jobs:
           hoge=`cat hoge.py`
           echo $hoge
           exit $hoge
+        working-directory: script
         shell: bash
   
       # NOTE: webhook イベントの制約により checkout の挙動が `poc-ci.yaml` とは若干異なる
