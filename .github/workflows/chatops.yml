@@ -51,6 +51,7 @@ jobs:
         uses: actions/github-script@v3
         env:
           MESSAGE: |
+            :white_check_mark:
             Test succeeded on ${{ steps.it.outputs.SHA }}
             workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
@@ -77,6 +78,7 @@ jobs:
         uses: actions/github-script@v3
         env:
           MESSAGE: |
+            :x:
             Test failed on ${{ needs.chatops.outputs.sha }}
             workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
