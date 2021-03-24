@@ -1,6 +1,8 @@
 name: ChatOps
 
-on: [issue_comment]
+on: 
+  issue_comment:
+    types: [created, edited]
 
 jobs:
   chatops:
@@ -48,10 +50,7 @@ jobs:
         uses: actions/github-script@v3
         env:
           MESSAGE: |
-            command-name: ${{ steps.command.outputs.command-name }}, 
-            command-arguments: ${{ steps.command.outputs.command-arguments }})
-            branch: ${{ steps.comment-branch.outputs.head_ref }}
-            SHA: ${{ steps.comment-branch.outputs.head_sha }}
+            SHA: ${{ steps.it.outputs.SHA }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
