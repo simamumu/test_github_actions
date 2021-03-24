@@ -29,6 +29,7 @@ jobs:
     steps:
       - name: script
         run: |
+          pwd
           hoge=`cat hoge.py`
           echo $hoge
           exit $hoge
