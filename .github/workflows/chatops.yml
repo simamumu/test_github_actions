@@ -52,6 +52,15 @@ jobs:
         env:
           MESSAGE: |
             Test succeeded on ${{ steps.it.outputs.SHA }}
+            GITHUB_WORKFLOW: ${{GITHUB_WORKFLOW}}
+            GITHUB_RUN_ID: ${{GITHUB_RUN_ID}}
+            GITHUB_RUN_NUMBER: ${{GITHUB_RUN_NUMBER}}
+            GITHUB_ACTION: ${{GITHUB_ACTION}}
+            GITHUB_ACTOR: ${{GITHUB_ACTOR}}
+            GITHUB_EVENT_NAME: ${{GITHUB_EVENT_NAME}}
+            GITHUB_EVENT_PATH: ${{GITHUB_EVENT_PATH}}
+            GITHUB_REF: ${{GITHUB_REF}}
+            GITHUB_HEAD_REF: ${{GITHUB_HEAD_REF}}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
