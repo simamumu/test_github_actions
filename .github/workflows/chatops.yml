@@ -15,7 +15,7 @@ jobs:
       - name: Listen for PR Comments
         uses: machine-learning-apps/actions-chatops@master
         with:
-          TRIGGER_PHRASE: "!"
+          TRIGGER_PHRASE: "!test"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: it
@@ -46,11 +46,37 @@ jobs:
         with:
           ref: ${{ steps.it.outputs.SHA }}
 
-      - name: "Post Comment"
+      - name: Post Comment
+        if: steps.it.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/github-script@v3
         env:
           MESSAGE: |
-            SHA: ${{ steps.it.outputs.SHA }}
+            Test succeeded on ${{ steps.it.outputs.SHA }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: process.env.MESSAGE
+            })
+
+    outputs:
+      run_test: ${{ steps.it.outputs.BOOL_TRIGGERED }}
+      sha: ${{ steps.it.outputs.SHA }}
+
+  error_notification:
+    name: "Notify failure status"
+    if: failure() && needs.chatops.outputs.run_test == 'true'
+    needs: [chatops]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post Comment
+        uses: actions/github-script@v3
+        env:
+          MESSAGE: |
+            Test failed on ${{ needs.chatops.outputs.sha }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
