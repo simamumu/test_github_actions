@@ -24,7 +24,7 @@ jobs:
   run_tests:
     runs-on: ubuntu-latest
     needs: [listen_comments]
-    if: needs.chatops.outputs.run == 'true'
+    if: needs.listen_comments.outputs.run == 'true'
     steps:
       - name: Set up Python 3.7
         uses: actions/setup-python@v1
@@ -69,14 +69,14 @@ jobs:
   error_notification:
     runs-on: ubuntu-latest
     needs: [listen_comments, run_tests]
-    if: failure() && needs.chatops.outputs.run == 'true'
+    if: failure() && needs.listen_comments.outputs.run == 'true'
     steps:
       - name: Post Comment
         uses: actions/github-script@v3
         env:
           MESSAGE: |
             :x:
-            Test failed on ${{ needs.chatops.outputs.sha }}
+            Test failed on ${{ needs.listen_comments.outputs.sha }}
             workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
