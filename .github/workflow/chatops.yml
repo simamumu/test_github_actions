@@ -1,0 +1,63 @@
+name: ChatOps
+
+on: [issue_comment]
+
+jobs:
+  chatops:
+    runs-on: ubuntu-latest
+
+    # This job only runs for pull request comments
+    if: ${{ github.event.issue.pull_request }}
+
+    steps:
+      - name: Listen for PR Comments
+        uses: machine-learning-apps/actions-chatops@master
+        with:
+          TRIGGER_PHRASE: "!integration-test"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: it
+      # 以降のステップは steps.it.outputs.BOOL_TRIGGERED == 'true' 時のみ実行する
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.7"
+
+      - name: Get full Python version
+        id: get-full-python-version
+        run: echo ::set-output name=version::$(python -c "import sys; print('-'.join(str(v) for v in sys.version_info))")
+
+      - name: Install Poetry
+        if: steps.it.outputs.BOOL_TRIGGERED == 'true'
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.4
+
+      # NOTE: webhook イベントの制約により checkout の挙動が `poc-ci.yaml` とは若干異なる
+      # - `poc-ci.yaml` の checkout: PR ブランチの head をベースブランチにマージしたコミット
+      # - `poc-chatops.yaml` の checkout: PR ブランチの head コミット
+      # (詳細: https://github.com/mc-digital/food_supply_chain/pull/754#discussion_r576513672)
+      - name: Checkout
+        if: steps.it.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.it.outputs.SHA }}
+
+      - name: "Post Comment"
+        uses: actions/github-script@v3
+        env:
+          MESSAGE: |
+            command-name: ${{ steps.command.outputs.command-name }}, 
+            command-arguments: ${{ steps.command.outputs.command-arguments }})
+            branch: ${{ steps.comment-branch.outputs.head_ref }}
+            SHA: ${{ steps.comment-branch.outputs.head_sha }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: process.env.MESSAGE
+            })
