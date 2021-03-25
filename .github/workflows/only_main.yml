@@ -1,9 +1,9 @@
-name: PoC CI
+name: Only Main
 
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
@@ -16,5 +16,5 @@ jobs:
         run: echo ${{github.ref}}
 
       - name: run
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: echo RUN-TEST
