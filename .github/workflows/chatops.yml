@@ -28,15 +28,6 @@ jobs:
     if: needs.listen_comments.outputs.run == 'true'
 
     steps:
-      - name: script
-        run: |
-          pwd
-          hoge=`cat hoge.py`
-          echo $hoge
-          exit $hoge
-        working-directory: script
-        shell: bash
-  
       - name: Checkout
         uses: actions/checkout@v2
         with:
