@@ -28,6 +28,17 @@ jobs:
     if: needs.listen_comments.outputs.run == 'true'
 
     steps:
+      - name: script
+        run: |
+          trailing_text=$(echo ${{ needs.listen_comments.outputs.args }} | xargs)
+          if [ -n "$trailing_text" ]; then
+            echo $trailing_text
+          else
+            echo "kara"
+          fi
+        working-directory: script
+        shell: bash
+  
       - name: Checkout
         uses: actions/checkout@v2
         with:
