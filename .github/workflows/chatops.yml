@@ -36,7 +36,6 @@ jobs:
           else
             echo "kara"
           fi
-        working-directory: script
         shell: bash
   
       - name: Checkout
