@@ -1,0 +1,20 @@
+name: Only Main
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: echo ${{github.ref}}
+
+      - name: run
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: echo RUN-TEST
