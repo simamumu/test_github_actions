@@ -21,6 +21,7 @@ jobs:
       run: ${{ steps.it.outputs.BOOL_TRIGGERED }}
       sha: ${{ steps.it.outputs.SHA }}
       args: ${{ steps.it.outputs.TRAILING_LINE }}
+      pr_number: ${{ steps.it.outputs.PULL_REQUEST_NUMBER }}
 
   run_tests:
     runs-on: ubuntu-latest
@@ -29,13 +30,7 @@ jobs:
 
     steps:
       - name: tt
-        run: echo ${{ github.event.number }}
-
-      - name: set dbt dataset env
-        run: echo "DBT_DATASET=$(jq --raw-output .pull_request.number "${{ github.event.number }}")" >> $GITHUB_ENV 
-
-      - name: echo dbt dataset env
-        run: echo $DBT_DATASET
+        run: echo ${{ needs.listen_comments.outputs.pr_number }}
   
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,7 +46,7 @@ jobs:
             trailing txt : ${{ needs.listen_comments.outputs.args }}
             workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             dataset_name: ${{ env.DBT_DATASET }}
-            pr_number: ${{ github.event.number }}
+            pr_number: ${{ needs.listen_comments.outputs.pr_number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
