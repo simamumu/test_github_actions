@@ -43,14 +43,11 @@ jobs:
         with:
           ref: ${{ needs.listen_comments.outputs.sha }}
 
-      - name: set dbt dataset name
-        id: dbt
-        env:
-          DBT_DATASET: $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+      - name: set dbt dataset env
+        run: echo "DBT_DATASET=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV 
+
+      - name: echo dbt dataset env
         run: echo $DBT_DATASET
-        shell: bash
-        outputs: 
-          dataset_name: $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 
       - name: Post Comment
         uses: actions/github-script@v3
@@ -60,7 +57,7 @@ jobs:
             Test succeeded on ${{ needs.listen_comments.outputs.sha }}
             trailing txt : ${{ needs.listen_comments.outputs.args }}
             workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            dataset_name: ${{ steps.dbt.outputs.dataset_name }}
+            dataset_name: ${{ env.DBT_DATASET }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
