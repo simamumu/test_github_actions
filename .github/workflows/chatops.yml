@@ -29,10 +29,26 @@ jobs:
     if: needs.listen_comments.outputs.run == 'true'
 
     steps:
-      - name: tt
+      - name: dbt run
         env:
           DBT_DATASET: dbt_stg_pr_${{ needs.listen_comments.outputs.pr_number }}
-        run: echo $DBT_DATASET
+        run: |
+          echo "
+          msk_poc:
+            target: stg
+            outputs:
+              stg:
+                type: bigquery
+                method: oauth
+                project: project
+                dataset: ${DBT_DATASET}
+                threads: 4
+                timeout_seconds: 300
+                location: asia-northeast1
+                priority: interactive
+          " >> profiles.yml
+          cat ./profiles.yml
+          echo $DBT_DATASET
   
       - name: Checkout
         uses: actions/checkout@v2
