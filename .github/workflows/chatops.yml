@@ -30,7 +30,8 @@ jobs:
 
     steps:
       - name: tt
-        run: echo ${{ needs.listen_comments.outputs.pr_number }}
+        DBT_DATASET: dbt_stg_pr_${{ needs.listen_comments.outputs.pr_number }}
+        run: echo $DBT_DATASET
   
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,6 +41,7 @@ jobs:
       - name: Post Comment
         uses: actions/github-script@v3
         env:
+          DBT_DATASET: dbt_stg_pr_${{ needs.listen_comments.outputs.pr_number }}
           MESSAGE: |
             :white_check_mark:
             Test succeeded on ${{ needs.listen_comments.outputs.sha }}
