@@ -19,9 +19,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: echo RUN-TEST
 
-      - name: set dbt dataset name
-        id: dbt
-        with:
-          DBT_DATASET: ${{ $(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH") }}
+      - name: set dbt dataset env
+        run: echo "DBT_DATASET=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV 
+
+      - name: echo dbt dataset env
         run: echo $DBT_DATASET
-        shell: bash
