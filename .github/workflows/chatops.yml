@@ -28,8 +28,11 @@ jobs:
     if: needs.listen_comments.outputs.run == 'true'
 
     steps:
+      - name: tt
+        run: echo ${{ github.event.number }}
+
       - name: set dbt dataset env
-        run: echo "DBT_DATASET=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV 
+        run: echo "DBT_DATASET=$(jq --raw-output .pull_request.number "${{ github.event.number }}")" >> $GITHUB_ENV 
 
       - name: echo dbt dataset env
         run: echo $DBT_DATASET
@@ -48,6 +51,7 @@ jobs:
             trailing txt : ${{ needs.listen_comments.outputs.args }}
             workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             dataset_name: ${{ env.DBT_DATASET }}
+            pr_number: ${{ github.event.number }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
