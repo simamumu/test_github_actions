@@ -30,7 +30,8 @@ jobs:
 
     steps:
       - name: tt
-        DBT_DATASET: dbt_stg_pr_${{ needs.listen_comments.outputs.pr_number }}
+        env:
+          DBT_DATASET: dbt_stg_pr_${{ needs.listen_comments.outputs.pr_number }}
         run: echo $DBT_DATASET
   
       - name: Checkout
