@@ -28,26 +28,16 @@ jobs:
     if: needs.listen_comments.outputs.run == 'true'
 
     steps:
-      - name: script
-        run: |
-          trailing_text=$(echo ${{ needs.listen_comments.outputs.args }} | xargs)
-          if [ -n "$trailing_text" ]; then
-            echo $trailing_text
-          else
-            echo "kara"
-          fi
-        shell: bash
-  
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ needs.listen_comments.outputs.sha }}
-
       - name: set dbt dataset env
         run: echo "DBT_DATASET=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV 
 
       - name: echo dbt dataset env
         run: echo $DBT_DATASET
+  
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.listen_comments.outputs.sha }}
 
       - name: Post Comment
         uses: actions/github-script@v3
