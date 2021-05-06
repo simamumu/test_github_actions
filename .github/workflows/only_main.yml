@@ -7,22 +7,18 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
-env:
-  DBT_DATASET: yuyuyu
+
 
 
 jobs:
   CI:
     runs-on: ubuntu-latest
+    env:
+      DBT_DATASET: yuyuyu
     steps:
       - name: echo
         run: echo ${{github.ref}}
 
       - name: run2
         run: |
-          ls
-          pwd
-          echo "-------test_github_actions--------"
-          ls ~/work/test_github_actions/
-          echo "-------test_github_actions--------"
-          ls ~/work/test_github_actions/.github
+          echo ${DBT_DATASET}
