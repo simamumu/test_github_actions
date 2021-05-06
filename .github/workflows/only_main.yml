@@ -22,6 +22,7 @@ jobs:
         run: |
           ls
           pwd
-          ls ~/work/
-          ls ~/work/test_github_actions/
+          echo "-------test_github_actions--------"
           ls ~/work/test_github_actions/test_github_actions/
+          echo "-------test_github_actions--------"
+          ls ~/work/test_github_actions/test_github_actions/.github
